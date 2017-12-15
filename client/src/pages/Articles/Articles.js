@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import DeleteBtn from "../../components/DeleteBtn";
+import SaveBtn from "../../components/SaveBtn";
 import Jumbotron from "../../components/Jumbotron";
 import API from "../../utils/API";
 import { Link } from "react-router-dom";
@@ -11,7 +12,8 @@ import axios from "axios";
 class Ariticles extends Component {
   state = {
     articles: [],
-    topic: ""
+    topic: "",
+    save: false
   }
 
   componentDidMount() {
@@ -20,27 +22,10 @@ class Ariticles extends Component {
 
 
   loadArticles = () => {
-    // console.log(topic);
-    // const key = "396259ee2c624ff1bde837f53cf92a76";
-
-    // const queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + key + "&q=bitcoin";
-    // // + "&q=" + topic;
-
-    // axios.get(queryURL).then((responseObj) =>{
-    //   console.log("apiObj", responseObj.data.response.docs);
-    //   // return(responseObj.data.response.docs)
-    //   console.log(this.state);
-    //   this.setState({
-    //       articles: responseObj.data.response.docs
-    //   }); 
-
-    //   console.log(this.state)
-    // });
-
 
     API.getArticles()
       .then(res =>
-        this.setState({ articles: res.data, title: "", href: "" })
+        this.setState({ articles: res.data})
       )
       .catch(err => console.log(err));
   }
@@ -49,6 +34,12 @@ class Ariticles extends Component {
     API.deleteArticle(id)
       .then(res => this.loadArticles())
       .catch(err => console.log(err));
+  }
+
+  saveArticle = id => {
+    API.saveArticle(id)
+      // .then(res => this.loadArticles())
+      // .catch(err => console.log(err));
   }
 
   handleInputChange = event => {
@@ -63,9 +54,7 @@ class Ariticles extends Component {
     event.preventDefault();
     if (this.state.topic) {
       API.runQuery(this.state.topic)
-        // .then(res => console.log(res.data.response.docs),
-        //   this.setState({articles: res.data.response.docs})
-        //   ) 
+
         .then(res => this.setState({articles: res.data.response.docs}))
         .catch(err => console.log(err));
         // .catch(err => console.log(err));
@@ -106,13 +95,21 @@ class Ariticles extends Component {
             ) : (
               <List>
                 {this.state.articles.map(article => (
-                  <ListItem key={article._id}>
+                  console.log(article),
+                  <ListItem 
+                    key={article._id}
+                    href={article.web_url}
+                  >
                     <Link to={"/articles/" + article._id}>
                       <strong>
                         {article.snippet}
                       </strong>
                     </Link>
-                    <DeleteBtn onClick={() => this.deleteArticle(article._id)} />
+                    {! this.state.saved ? (
+                      <SaveBtn onClick={() => this.saveArticle(article._id)} />
+                    ) : (
+                      <DeleteBtn onClick={() => this.deleteArticle(article._id)} />
+                    )}
                   </ListItem>
                 ))}
               </List>
