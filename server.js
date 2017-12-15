@@ -15,13 +15,18 @@ app.use(routes);
 
 // Set up promises with mongoose
 mongoose.Promise = global.Promise;
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/nytArticles_db";
 // Connect to the Mongo DB
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/nytArticles_db",
-  {
-    useMongoClient: true
-  }
-);
+if (process.env.MONGODB_URI) {
+	mongoose.connect(MONGODB_URI, {
+		useMongoClient: true
+	})
+}
+else {
+	mongoose.connect("mongodb://localhost/nytArticles_db");
+};
+
+
 
 // Start the API server
 app.listen(PORT, function() {
