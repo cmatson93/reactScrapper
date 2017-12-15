@@ -5,16 +5,13 @@ const key = "396259ee2c624ff1bde837f53cf92a76";
 
 export default {
 
-  runQuery: function() {
-    // console.log(topic);
+  runQuery: function(topic) {
+    console.log(topic);
 
-    const queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + key + "&q=bitcoin";
+    const queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + key + "&q=" + topic;
     // + "&q=" + topic;
-
-    axios.get(queryURL).then(function(responseObj) {
-      console.log("apiObj", responseObj.data.response.docs);
-      // return(responseObj.data.response.docs)
-    });
+    return(axios.get(queryURL))
+  
 
   },
 

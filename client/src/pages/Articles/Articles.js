@@ -21,28 +21,28 @@ class Ariticles extends Component {
 
   loadArticles = () => {
     // console.log(topic);
-    const key = "396259ee2c624ff1bde837f53cf92a76";
+    // const key = "396259ee2c624ff1bde837f53cf92a76";
 
-    const queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + key + "&q=bitcoin";
-    // + "&q=" + topic;
+    // const queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + key + "&q=bitcoin";
+    // // + "&q=" + topic;
 
-    axios.get(queryURL).then((responseObj) =>{
-      console.log("apiObj", responseObj.data.response.docs);
-      // return(responseObj.data.response.docs)
-      console.log(this.state);
-      this.setState({
-          articles: responseObj.data.response.docs
-      }); 
+    // axios.get(queryURL).then((responseObj) =>{
+    //   console.log("apiObj", responseObj.data.response.docs);
+    //   // return(responseObj.data.response.docs)
+    //   console.log(this.state);
+    //   this.setState({
+    //       articles: responseObj.data.response.docs
+    //   }); 
 
-      console.log(this.state)
-    });
+    //   console.log(this.state)
+    // });
 
 
-    // API.getArticles()
-    //   .then(res =>
-    //     this.setState({ articles: res.data, title: "", href: "" })
-    //   )
-    //   .catch(err => console.log(err));
+    API.getArticles()
+      .then(res =>
+        this.setState({ articles: res.data, title: "", href: "" })
+      )
+      .catch(err => console.log(err));
   }
 
   deleteArticle = id => {
@@ -58,41 +58,49 @@ class Ariticles extends Component {
     });
   }
 
+
   handleFormSubmit = event => {
     event.preventDefault();
-    if (this.state.title && this.state.href) {
-      API.runQuery({
-        title: this.state.title,
-        href: this.state.href
-      })
-        .then(res => this.loadArticles())
+    if (this.state.topic) {
+      API.runQuery(this.state.topic)
+        // .then(res => console.log(res.data.response.docs),
+        //   this.setState({articles: res.data.response.docs})
+        //   ) 
+        .then(res => this.setState({articles: res.data.response.docs}))
         .catch(err => console.log(err));
+        // .catch(err => console.log(err));
+        // console.log(this.state);
     }
-  }
-
-  setTopic = (topic) => {
-    this.setState{
-      topic: topic
-    })
-    .then(this.getNewArticles())
-  }
-
-  getNewArticles = () => {
-    API.runQuery(this.state.topic)
-      .then(res =>
-        console.log(res)
-      )
   }
 
   render() {
     return (
       <Container fluid>
         <Row>
-          <Col size="md-8 sm-12">
+          <Col size="md-12 sm-12">
             <Jumbotron>
-              <h1>BI Scrapper</h1>
-              <h3>Web Application that allows you to scrape Buisiness Insiders Website</h3>
+              <h1>New York Times Article Search</h1>
+              <h3>Web Application that allows you to search the New York Times for articles on a specific topic</h3>
             </Jumbotron>
+            <Row>
+              <Col size="md-8 sm-12">
+              <Input
+                name="topic"
+                value={this.state.topic}
+                onChange={this.handleInputChange}
+                placeholder="Search a topic"
+              />
+              </Col>   
+              <Col size="md-2 sm-12">
+                <FormBtn
+                  onClick={this.handleFormSubmit}
+                  type="success"
+                  className="input-lg"
+                >
+                  Search
+                </FormBtn>
+              </Col>
+            </Row>
             {! this.state.articles.length ?  (
               <h3>No Results to Display</h3>
             ) : (
