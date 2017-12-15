@@ -12,7 +12,6 @@ export default {
     // + "&q=" + topic;
     return(axios.get(queryURL))
   
-
   },
 
   // Gets all articles
@@ -28,9 +27,9 @@ export default {
     return axios.delete("/api/articles/" + id);
   },
   // Saves a book to the database
-  saveArticle: function(id) {
+  saveArticle: function(articleData) {
     console.log("Article saved")
-    return axios.post("/api/articles" + id);
+    return axios.post("/api/articles", articleData);
   }
 };
 

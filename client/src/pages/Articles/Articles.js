@@ -38,6 +38,13 @@ class Ariticles extends Component {
 
   saveArticle = id => {
     API.saveArticle(id)
+    // API.saveBook({
+    //   title: this.state.title,
+    //   author: this.state.author,
+    //   synopsis: this.state.synopsis
+    // })
+      .then(res => this.loadBooks())
+      .catch(err => console.log(err));
       // .then(res => this.loadArticles())
       // .catch(err => console.log(err));
   }
@@ -106,7 +113,7 @@ class Ariticles extends Component {
                       </strong>
                     </Link>
                     {! this.state.saved ? (
-                      <SaveBtn onClick={() => this.saveArticle(article._id)} />
+                      <SaveBtn onClick={() => this.saveArticle(article._id, article.snippet, article.href)} />
                     ) : (
                       <DeleteBtn onClick={() => this.deleteArticle(article._id)} />
                     )}
